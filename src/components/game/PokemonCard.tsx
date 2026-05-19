@@ -1,7 +1,9 @@
 'use client';
 
+import { useState } from 'react';
 import { Pokemon, SpecialCondition } from '@/types/game';
 import { TypeBadge, EnergyPip } from './TypeBadge';
+import { CardDetailModal } from './CardDetailModal';
 import { cn } from '@/lib/utils';
 
 const conditionColors: Record<SpecialCondition, string> = {
@@ -22,14 +24,21 @@ interface PokemonCardProps {
 }
 
 export function PokemonCard({ pokemon, size = 'md', isActive = false, isOpponent = false, onClick, selected }: PokemonCardProps) {
+  const [expanded, setExpanded] = useState(false);
+
+  const handleClick = () => {
+    setExpanded(true);
+    onClick?.();
+  };
   const hpPercent = (pokemon.currentHp / pokemon.hp) * 100;
   const hpColor = hpPercent > 50 ? 'bg-green-500' : hpPercent > 25 ? 'bg-yellow-500' : 'bg-red-500';
   const isKO = pokemon.currentHp <= 0;
 
   if (size === 'sm') {
     return (
+      <>
       <div
-        onClick={onClick}
+        onClick={handleClick}
         className={cn(
           'relative rounded-lg border p-2 flex flex-col gap-1 transition-all duration-150',
           isOpponent ? 'border-red-900/50 bg-red-950/20' : 'border-emerald-900/50 bg-emerald-950/20',
@@ -60,7 +69,20 @@ export function PokemonCard({ pokemon, size = 'md', isActive = false, isOpponent
             ))}
           </div>
         )}
+        {/* All attacks small */}
+        {pokemon.attacks?.length > 0 && (
+          <div className="pt-1 border-t border-gray-800/60 space-y-1">
+            {pokemon.attacks.map((attack, i) => (
+              <div key={i} className="flex items-center justify-between gap-1">
+                <span className="text-[9px] text-gray-400 truncate">{attack.name}</span>
+                <span className="text-[9px] font-mono text-white shrink-0">{attack.damage || '—'}</span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
+      {expanded && <CardDetailModal card={pokemon} onClose={() => setExpanded(false)} />}
+      </>
     );
   }
 
@@ -159,8 +181,9 @@ export function PokemonCard({ pokemon, size = 'md', isActive = false, isOpponent
 
   // Default md size
   return (
+    <>
     <div
-      onClick={onClick}
+      onClick={handleClick}
       className={cn(
         'relative rounded-lg border p-3 flex flex-col gap-2 transition-all duration-150',
         isOpponent ? 'border-red-900/50 bg-red-950/20' : 'border-emerald-900/50 bg-emerald-950/20',
@@ -201,14 +224,30 @@ export function PokemonCard({ pokemon, size = 'md', isActive = false, isOpponent
         </div>
       )}
 
-      {/* First attack */}
-      {pokemon.attacks[0] && (
-        <div className="flex items-center justify-between">
-          <span className="text-xs text-gray-300">{pokemon.attacks[0].name}</span>
-          <span className="text-xs font-mono font-bold text-white">{pokemon.attacks[0].damage || '—'}</span>
+      {/* All attacks */}
+      {pokemon.attacks?.length > 0 && (
+        <div className="space-y-1.5 pt-1 border-t border-gray-800/60">
+          {pokemon.attacks.map((attack, i) => (
+            <div key={i}>
+              <div className="flex items-center justify-between gap-1">
+                <div className="flex items-center gap-1">
+                  <div className="flex gap-0.5">
+                    {attack.cost?.map((c, j) => <EnergyPip key={j} type={c} size="xs" />)}
+                  </div>
+                  <span className="text-[10px] text-gray-300 font-medium">{attack.name}</span>
+                </div>
+                <span className="text-[10px] font-mono font-bold text-white shrink-0">{attack.damage || '—'}</span>
+              </div>
+              {attack.text && (
+                <div className="text-[9px] text-gray-500 leading-tight mt-0.5 pl-1">{attack.text}</div>
+              )}
+            </div>
+          ))}
         </div>
       )}
     </div>
+    {expanded && <CardDetailModal card={pokemon} onClose={() => setExpanded(false)} />}
+    </>
   );
 }
 

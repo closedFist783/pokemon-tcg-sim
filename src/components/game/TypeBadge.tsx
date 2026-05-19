@@ -71,13 +71,14 @@ export function EnergyCost({ cost }: { cost: CardType[] }) {
   );
 }
 
-export function EnergyPip({ type }: { type: CardType }) {
+export function EnergyPip({ type, size = 'sm' }: { type: CardType; size?: 'xs' | 'sm' }) {
   const colors = typeColors[type] || typeColors.Colorless;
+  const sizeClass = size === 'xs' ? 'w-3 h-3 text-[8px]' : 'w-4 h-4 text-[10px]';
   return (
     <span
       title={`${type} Energy`}
-      className={`inline-flex items-center justify-center w-4 h-4 rounded-full border text-[10px]
-        ${colors.bg} ${colors.text} ${colors.border}`}
+      className={`inline-flex items-center justify-center rounded-full border
+        ${sizeClass} ${colors.bg} ${colors.text} ${colors.border}`}
     >
       {typeIcons[type]?.charAt(0) || '?'}
     </span>
