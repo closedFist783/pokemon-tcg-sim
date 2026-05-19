@@ -35,8 +35,37 @@ export function ActionPanel({ gameState, onAction, isLoading }: ActionPanelProps
   // Get player's hand attacks if active Pokémon
   const activeAttacks = board.playerActive?.attacks || [];
 
+  // Detect if the last AI message is asking a yes/no question without structured choices
+  const lastMessage = gameState.messages[gameState.messages.length - 1];
+  const isYesNoPrompt =
+    !awaitingChoice &&
+    !isLoading &&
+    lastMessage?.role === 'ai' &&
+    /\b(yes|no)\b.*\?|\?.*\b(yes|no)\b|would you like|do you want|shall we/i.test(lastMessage.content);
+
   return (
     <div className="border-t border-gray-800 bg-black/40 p-3 space-y-3">
+      {/* Yes/No fallback for unstructured questions */}
+      {isYesNoPrompt && (
+        <div className="rounded-lg border border-blue-900/60 bg-blue-950/20 p-3">
+          <div className="text-xs text-blue-400 font-medium mb-2">Your response:</div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => onAction('Yes')}
+              className="px-4 py-1.5 rounded-lg border border-emerald-700/60 bg-emerald-950/30 text-emerald-200 text-sm font-medium hover:border-emerald-500 hover:bg-emerald-900/40 transition-all duration-150 cursor-pointer"
+            >
+              Yes
+            </button>
+            <button
+              onClick={() => onAction('No')}
+              className="px-4 py-1.5 rounded-lg border border-red-800/60 bg-red-950/30 text-red-200 text-sm font-medium hover:border-red-600 hover:bg-red-900/40 transition-all duration-150 cursor-pointer"
+            >
+              No
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Choice prompt */}
       {awaitingChoice && (
         <div className="rounded-lg border border-yellow-900/60 bg-yellow-950/20 p-3">

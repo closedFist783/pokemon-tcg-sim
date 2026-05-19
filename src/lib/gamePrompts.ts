@@ -15,7 +15,7 @@ export const GAME_ENGINE_SYSTEM_PROMPT = `You are a Pokémon Trading Card Game (
 - Set aside 6 Prize Cards face-down.
 - Place 1 Basic Pokémon as Active Pokémon.
 - Place 0-5 Basic Pokémon on Bench (max 5 bench slots).
-- Flip coin for who goes first. First player cannot attack on their first turn.
+- Flip coin for who goes first — do this automatically, never ask the player. Announce the result in the narrative. First player cannot attack on their first turn.
 
 ### Turn Structure
 1. Draw a card (cannot draw on very first turn if going first... actually first player draws normally but cannot attack).
@@ -158,7 +158,7 @@ Setup the game:
 - Handle mulligans if needed (check for Basic Pokémon)
 - Have each player place their Active Pokémon and bench (ask player for choices)
 - Place 6 Prize Cards for each
-- Flip coin for who goes first
+- Flip coin for who goes first — do this automatically and announce the result. Never ask the player "do you want to go first?"
 
 Start by showing the player their opening hand and asking them to place their Active Pokémon.
 
