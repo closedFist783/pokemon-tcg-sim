@@ -39,8 +39,12 @@ export function GameBoard({ gameState, onAction, isLoading, conversationHistory 
       <div className="flex flex-1 overflow-hidden">
         {/* Left: Board */}
         <div className="flex-1 flex flex-col overflow-hidden min-w-0">
+
+          {/* Scrollable board area (opponent + battle zone + player) */}
+          <div className="flex-1 overflow-y-auto min-h-0">
+
           {/* Opponent side */}
-          <div className="flex-none p-3 border-b border-gray-800/50 bg-red-950/5">
+          <div className="p-3 border-b border-gray-800/50 bg-red-950/5">
             <div className="flex items-center gap-2 mb-2">
               <span className="text-xs font-mono text-red-400 uppercase tracking-wider">AI Opponent</span>
               <div className="flex items-center gap-3 text-xs text-gray-600 ml-auto">
@@ -70,7 +74,7 @@ export function GameBoard({ gameState, onAction, isLoading, conversationHistory 
           </div>
 
           {/* Battle zone divider */}
-          <div className="flex items-center gap-3 px-4 py-1.5 bg-gray-900/30 border-y border-gray-800/30 shrink-0">
+          <div className="flex items-center gap-3 px-4 py-1.5 bg-gray-900/30 border-y border-gray-800/30">
             <div className="flex-1 h-px bg-gray-800/60" />
             <span className="text-[10px] text-gray-600 uppercase tracking-widest font-mono">Battle Zone</span>
             {board.activeStadium && (
@@ -82,7 +86,7 @@ export function GameBoard({ gameState, onAction, isLoading, conversationHistory 
           </div>
 
           {/* Player side */}
-          <div className="flex-none p-3 border-b border-gray-800/50 bg-emerald-950/5">
+          <div className="p-3 border-b border-gray-800/50 bg-emerald-950/5">
             {/* Player active */}
             <div className="flex justify-center mb-2">
               <div className="w-64">
@@ -109,8 +113,10 @@ export function GameBoard({ gameState, onAction, isLoading, conversationHistory 
             </div>
           </div>
 
-          {/* Hand */}
-          <div className="flex-none border-b border-gray-800 bg-black/30">
+          </div> {/* end scrollable board area */}
+
+          {/* Hand — always pinned above action panel */}
+          <div className="flex-none border-b border-gray-800 bg-black/40">
             <div className="text-[10px] text-gray-500 uppercase tracking-wider font-mono px-3 pt-2 pb-1">
               Your Hand ({board.playerHand.length} cards)
             </div>
@@ -132,8 +138,10 @@ export function GameBoard({ gameState, onAction, isLoading, conversationHistory 
             </div>
           </div>
 
-          {/* Action panel */}
-          <ActionPanel gameState={gameState} onAction={onAction} isLoading={isLoading} />
+          {/* Action panel — always visible at bottom */}
+          <div className="flex-none">
+            <ActionPanel gameState={gameState} onAction={onAction} isLoading={isLoading} />
+          </div>
         </div>
 
         {/* Right sidebar */}
