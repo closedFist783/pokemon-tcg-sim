@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Pokémon TCG Simulator
 
-## Getting Started
+A Pokémon Trading Card Game simulator powered by Claude AI, featuring chess.com-style post-game analysis.
 
-First, run the development server:
+## Features
+
+- 🤖 **Claude AI Game Engine** — Full rules enforcement, card effects, and strategic AI opponent
+- ♟️ **Chess.com-style Review** — Post-game analysis with eval bars, move ratings (Brilliant to Blunder), and accuracy scores
+- ⚡ **Live Eval Bar** — Real-time advantage tracking throughout the game
+- 🎴 **Full Board State** — Active Pokémon, bench, hand, energy, damage, and special conditions tracked
+- 📊 **Move History** — Complete turn-by-turn log with eval changes
+- 🌑 **OLED Dark Theme** — Deep black chess.com-inspired UI
+
+## Tech Stack
+
+- **Next.js 16** (App Router) + TypeScript
+- **shadcn/ui** (Base UI components)
+- **Tailwind CSS v4**
+- **Anthropic SDK** (Claude claude-opus-4-5)
+- **Recharts** (Eval graph)
+- **lucide-react** (Icons)
+
+## Setup
+
+```bash
+npm install
+```
+
+Create `.env.local`:
+```
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+```
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Game Flow
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Home** (`/`) — Landing page with "New Game" CTA
+2. **Game** (`/game`) — Full board with active Pokémon, bench, hand, eval bar, and chat narration
+3. **Review** (`/review`) — Post-game analysis with eval graph, move ratings, and accuracy scores
 
-## Learn More
+## How to Play
 
-To learn more about Next.js, take a look at the following resources:
+1. Click **New Game** — Claude generates both decks and sets up the board
+2. Use the action panel to make moves (attack, attach energy, play trainers, end turn)
+3. Type custom actions in the text input for anything not shown
+4. After the game ends, view your chess.com-style review
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Architecture
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `/src/types/game.ts` — Core TypeScript types
+- `/src/lib/gamePrompts.ts` — Claude system prompts for game engine and review
+- `/src/app/api/game/` — API routes (start, action, review)
+- `/src/components/game/` — Game UI components
+- `/src/app/game/` — Active game page with state management
+- `/src/app/review/` — Post-game review page
