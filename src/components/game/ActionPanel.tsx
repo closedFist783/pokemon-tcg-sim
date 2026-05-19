@@ -16,6 +16,8 @@ export function ActionPanel({ gameState, onAction, isLoading }: ActionPanelProps
   const [customAction, setCustomAction] = useState('');
   const { awaitingChoice, board } = gameState;
   const isPlayerTurn = board.currentTurn === 'player';
+  // Choice buttons are always enabled when waiting for player input (setup, prize picks, etc.)
+  const choiceDisabled = isLoading;
   const disabled = isLoading || !isPlayerTurn;
 
   const handleChoice = (optionId: string, label: string) => {
@@ -44,7 +46,7 @@ export function ActionPanel({ gameState, onAction, isLoading }: ActionPanelProps
               <button
                 key={opt.id}
                 onClick={() => handleChoice(opt.id, opt.label)}
-                disabled={disabled}
+                disabled={choiceDisabled}
                 className={cn(
                   'px-3 py-1.5 rounded-lg border text-sm font-medium transition-all duration-150 cursor-pointer',
                   'border-yellow-700/60 bg-yellow-900/30 text-yellow-200',
@@ -142,13 +144,15 @@ export function ActionPanel({ gameState, onAction, isLoading }: ActionPanelProps
           value={customAction}
           onChange={(e) => setCustomAction(e.target.value)}
           placeholder={
-            !isPlayerTurn 
-              ? "Waiting for AI opponent..." 
-              : isLoading 
-                ? "Processing..." 
-                : "Type any action... (e.g. 'bench Eevee', 'retreat to Venusaur')"
+            isLoading
+              ? 'Processing...'
+              : awaitingChoice
+                ? "Or type your choice manually..."
+                : !isPlayerTurn
+                  ? 'Waiting for AI opponent...'
+                  : "Type any action... (e.g. 'bench Eevee', 'retreat to Venusaur')"
           }
-          disabled={disabled}
+          disabled={isLoading || (!isPlayerTurn && !awaitingChoice)}
           className={cn(
             'flex-1 bg-gray-900/80 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-200',
             'placeholder:text-gray-600',
